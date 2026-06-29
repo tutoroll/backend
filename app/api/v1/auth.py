@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies.db import get_db
 from app.schemas import LoginUser, UserCreate, UserResponse
-from app.services.auth import login, refresh_tokens, register_user
+from app.services.auth import login, logout, refresh_tokens, register_user
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -33,7 +33,7 @@ async def refresh(
 
 
 @router.post("/logout")
-async def logout(
+async def logout_user(
     response: Response,
     request: Request,
     db: AsyncSession = Depends(get_db),

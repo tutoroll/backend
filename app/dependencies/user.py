@@ -17,7 +17,7 @@ async def get_current_user(
     payload = decode_access_token(access_token)
     if not payload:
         raise HTTPException(HTTP_401_UNAUTHORIZED)
-    user_id = payload.get("sub")
+    user_id = int(payload.get("sub"))
     if not user_id:
         raise HTTPException(HTTP_401_UNAUTHORIZED)
     res = await db.execute(select(User).where(User.id == user_id))

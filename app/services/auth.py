@@ -60,7 +60,7 @@ async def login(response: Response, login_model: LoginUser, db: AsyncSession):
         raise HTTPException(status_code=400, detail="Invalid email/password")
 
     # access token
-    access_token = create_access_token(data={"sub": user.id})
+    access_token = create_access_token(data={"sub": str(user.id)})
     response.set_cookie(
         key="access_token",
         value=access_token,
@@ -105,7 +105,7 @@ async def refresh_tokens(
     user_id = token_record.user_id
 
     # Токен валиден, создаём новый access
-    new_access_token = create_access_token(data={"sub": user_id})
+    new_access_token = create_access_token(data={"sub": str(user_id)})
 
     # Устанавливаем новый access в cookies
     response.set_cookie(
@@ -201,7 +201,8 @@ def decode_access_token(token: str) -> dict:
         if payload.get("type") != "access":
             return None
         return payload
-    except JWTError:
+    except JWTError as e:
+        print(e)
         return None
 
 
