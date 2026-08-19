@@ -33,7 +33,7 @@ async def register_user(user_create: UserCreate, db: AsyncSession) -> UserRespon
     # проверка на существующего пользователя
     res = await db.execute(select(User).where(User.email == user_create.email))
     if res.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="User already registered")
+        raise HTTPException(status_code=400, detail="This email already used")
 
     # регистрация
     hashed_pass = get_password_hash(user_create.password)

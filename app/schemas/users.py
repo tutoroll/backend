@@ -2,9 +2,11 @@ from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, ConfigDict
 
+
 class Role(str, Enum):
-    STUDENT='student'
-    TUTOR='tutor'
+    STUDENT = "student"
+    TUTOR = "tutor"
+
 
 class UserCreate(BaseModel):
     name: str
@@ -18,6 +20,7 @@ class LoginUser(BaseModel):
     password: str
     role: Role
 
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -26,7 +29,10 @@ class UserResponse(BaseModel):
     surname: str
     email: str
     created_at: datetime
+    avatar_key: str | None = None
 
+class UserAvatar(BaseModel):
+    url: str
 
 class StudentTutorCreate(BaseModel):
     student_id: int

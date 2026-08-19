@@ -17,4 +17,10 @@ dependencies = [
     "sqlalchemy>=2.0.51",
     "greenlet>=3.0.0",
     "bcrypt>=4.0.1,<4.1",
+    "aioboto3>=15.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "types-aiobotocore-s3>=3.8.0",
 ]

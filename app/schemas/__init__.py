@@ -15,7 +15,13 @@ from app.schemas.tasks import (
     TaskCreate,
     TaskResponse,
 )
-from app.schemas.users import StudentTutorCreate, UserCreate, UserResponse, LoginUser
+from app.schemas.users import (
+    StudentTutorCreate,
+    UserCreate,
+    UserResponse,
+    LoginUser,
+    UserAvatar,
+)
 
 __all__ = [
     "AnswerCreate",
@@ -35,4 +41,5 @@ __all__ = [
     "UserCreate",
     "UserResponse",
     "LoginUser",
+    "UserAvatar",
 ]
