@@ -1,62 +1,62 @@
 ## Tutoroll Backend
 
-Backend-часть проекта Tutoroll на `FastAPI`. Репозиторий отвечает за аутентификацию пользователя, получение профиля и работу с аватарами через S3-совместимое хранилище.
+The backend service for Tutoroll built with `FastAPI`. This repository is responsible for authentication, user profile APIs, and avatar storage via an S3-compatible object storage.
 
-## Что реализовано
+## Implemented Features
 
-- регистрация пользователя;
-- логин с установкой `access_token` и `refresh_token` в `HttpOnly` cookies;
-- обновление access token через refresh token;
-- logout с отзывом refresh token;
-- получение текущего пользователя;
-- загрузка и получение ссылки на аватар;
-- локальный dev-стенд через `docker-compose` с `PostgreSQL` и `MinIO`.
+- user registration;
+- login with `HttpOnly` cookie-based `access_token` and `refresh_token`;
+- access token refresh via refresh token;
+- logout with refresh token revocation;
+- current user retrieval;
+- avatar upload and avatar URL retrieval;
+- local development stack via `docker-compose` with `PostgreSQL` and `MinIO`.
 
-## Основные части проекта
+## Project Structure
 
-- `app/api/v1/` - HTTP-роуты (`/auth`, `/user`);
-- `app/services/` - бизнес-логика аутентификации, пользователей и S3-хранилища;
-- `app/models/` - SQLAlchemy-модели;
-- `app/schemas/` - Pydantic-схемы запросов и ответов;
-- `app/dependencies/` - зависимости FastAPI для БД, текущего пользователя и storage;
-- `main.py` - точка входа, инициализация приложения, CORS и lifecycle.
+- `app/api/v1/` - HTTP routes (`/auth`, `/user`);
+- `app/services/` - business logic for auth, users, and S3 storage;
+- `app/models/` - SQLAlchemy models;
+- `app/schemas/` - Pydantic request/response schemas;
+- `app/dependencies/` - FastAPI dependencies for DB, current user, and storage;
+- `main.py` - application entry point, CORS setup, and lifecycle wiring.
 
-## Стек
+## Tech Stack
 
 - `Python 3.14`
 - `FastAPI`
 - `SQLAlchemy 2`
 - `asyncpg`
 - `Pydantic v2` + `pydantic-settings`
-- `python-jose` для JWT
-- `passlib` + `bcrypt` для хеширования паролей
+- `python-jose` for JWT
+- `passlib` + `bcrypt` for password hashing
 - `aioboto3` / S3 API
 - `PostgreSQL`
-- `MinIO` для локального S3-совместимого хранилища
-- `uv` для управления зависимостями
+- `MinIO` for local S3-compatible storage
+- `uv` for dependency management
 
 ## API
 
 ### Auth
 
-- `POST /auth/register` - регистрация пользователя
-- `POST /auth/login` - вход
-- `POST /auth/refresh` - обновление access token
-- `POST /auth/logout` - выход
+- `POST /auth/register` - register a new user
+- `POST /auth/login` - sign in
+- `POST /auth/refresh` - refresh access token
+- `POST /auth/logout` - sign out
 
 ### User
 
-- `GET /user/me` - текущий пользователь
-- `GET /user/{user_id}` - пользователь по id
-- `POST /user/avatar/me` - загрузка аватара
-- `GET /user/avatar/me` - ссылка на аватар текущего пользователя
-- `GET /user/avatar/{avatar_key}` - ссылка на аватар по ключу
+- `GET /user/me` - get current user
+- `GET /user/{user_id}` - get user by ID
+- `POST /user/avatar/me` - upload current user avatar
+- `GET /user/avatar/me` - get current user avatar URL
+- `GET /user/avatar/{avatar_key}` - get avatar URL by key
 
-## Переменные окружения
+## Environment Variables
 
-Пример конфигурации лежит в `.env.example`.
+See `.env.example` for a full configuration template.
 
-Обязательные переменные:
+Required variables:
 
 ```env
 SECRET_KEY=
@@ -71,40 +71,40 @@ S3_SECRET_KEY=
 S3_BUCKET=
 ```
 
-## Локальный запуск
+## Local Run
 
-### Вариант 1: через Docker Compose
+### Option 1: Docker Compose
 
 ```bash
 docker compose up --build
 ```
 
-Поднимутся:
+This starts:
 
-- backend на `http://localhost:8000`
-- PostgreSQL на `localhost:5432`
-- MinIO S3 API на `http://localhost:9000`
-- MinIO console на `http://localhost:9001`
+- backend at `http://localhost:8000`
+- PostgreSQL at `localhost:5432`
+- MinIO S3 API at `http://localhost:9000`
+- MinIO console at `http://localhost:9001`
 
-### Вариант 2: локально через uv
+### Option 2: Local run with uv
 
 ```bash
 uv sync
 uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Перед запуском нужен файл `.env`.
+A local `.env` file is required.
 
-## Особенности реализации
+## Implementation Notes
 
-- access token подписывается через JWT;
-- refresh token хранится в базе в виде SHA-256 хеша;
-- cookies используются как основной транспорт для авторизации;
-- при старте приложения создаются таблицы и инициализируется S3 storage;
-- для development bucket в MinIO может создаваться автоматически.
+- access tokens are signed JWTs;
+- refresh tokens are stored in the database as SHA-256 hashes;
+- cookies are the main auth transport;
+- on startup, the app initializes DB tables and S3 storage;
+- in development, the MinIO bucket can be created automatically.
 
-## Что стоит учесть
+## Important Notes
 
-- сейчас таблицы создаются из `SQLAlchemy metadata`; для production лучше использовать `Alembic` миграции;
-- CORS настроен под локальный frontend на `http://localhost:3000`;
-- значения в `.env.example` являются только примерами и не подходят для production.
+- database tables are currently created from `SQLAlchemy metadata`; for production, use `Alembic` migrations;
+- CORS is configured for local frontend origin `http://localhost:3000`;
+- values in `.env.example` are placeholders and must not be used in production.
